@@ -6,41 +6,71 @@
 {% block content %}
 <div class="row">
   <div class="col-md-3">
-    <ul class="list-group">
-      {% if categories %}
-      <li class="list-group-item {% if not curret_category.slug %}active{% endif %}">
-        <a href="/">Todos</a>
-      </li>
-      {% endif %}
-      {% for category in categories %}
-      {% if not category.parent %}
-      <li class="list-group-item {% if category and category.slug == category_item.slug %}active{% endif %}">
-        <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
-      </li>
-        {% if category.children.all %}
-          {% for subcategory in category.children.all %}
-          <li class="list-group-item {% if category and category.slug == category_item.slug %}active{% endif %}" style='margin-left:10px'>
-            <a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a>
-          </li>
-          {% endfor %}
+    <!-- Botón para mostrar/ocultar la lista de categorías en pantallas pequeñas -->
+    <button class="btn btn-primary d-md-none mb-3" type="button" data-bs-toggle="collapse" data-bs-target="#categoriesCollapse" aria-expanded="false" aria-controls="categoriesCollapse">
+      Mostrar Categorías
+    </button>
+
+    <div class="collapse d-md-block" id="categoriesCollapse">
+      <ul class="list-group">
+        {% if categories %}
+        <li class="list-group-item {% if not current_category %}active{% endif %} cabecera">
+          <a href="/">Todos</a>
+        </li>
         {% endif %}
-      
-      {% endif %}
-      {% endfor %}
-    </ul>
+        {% for category in categories %}
+        {% if not category.parent %}
+        <li class="list-group-item 
+          {% if current_category %}
+            {% if current_category.slug == category.slug %}
+              active
+            {% elif current_category.parent and current_category.parent.slug == category.slug %}
+              active
+            {% endif %}
+          {% endif %}">
+          <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
+          <!-- Botón de colapso para subcategorías -->
+          {% if category.children.all %}
+            <button class="btn btn-link" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-{{ category.id }}" aria-expanded="false" aria-controls="collapse-{{ category.id }}">
+              <i class="bi bi-chevron-down"></i>
+            </button>
+          {% endif %}
+        </li>
+
+        <!-- Subcategorías colapsables -->
+        {% if category.children.all %}
+          <div id="collapse-{{ category.id }}" class="collapse {% if current_category and current_category.parent and current_category.parent.slug == category.slug %}show{% endif %}">
+            <ul class="list-group">
+              {% for subcategory in category.children.all %}
+                <li class="list-group-item {% if current_category and current_category.slug == subcategory.slug %}active{% endif %}" style='margin-left:10px'>
+                  <a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+      </ul>
+    </div>
   </div>
   <div class="col-md-9">
-    <h1>{% if category.parent %}{{ category.parent }} - {{ category.name }}
-      {% elif category %}{{ category.name }}
-      {% else %}Productos{% endif %}</h1>
+    <h1>
+      {% if category.parent %}
+        {{ category.parent.name }} - {{ category.name }}
+      {% elif category %}
+        {{ category.name }}
+      {% else %}
+        Productos
+      {% endif %}
+    </h1>
     <div class="row">
       {% if products %}
       {% for product in products %}
       <div class="col-md-4 mb-3">
         <div class="card">
           <a href="{{ product.get_absolute_url }}">
-            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}"
-              class="card-img-top">
+            <img src="{% if product.image %}{{ product.image.url }}{% else %}{% static 'img/no_image.png' %}{% endif %}" class="card-img-top">
           </a>
           <div class="card-body">
             <h5 class="card-title"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></h5>

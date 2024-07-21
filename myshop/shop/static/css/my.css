@@ -1,3 +1,7 @@
+ul li.list-group-item.cabecera{
+    font-size: 1.1em;
+}
+
 ul li.list-group-item{
     display: flex;
     align-items: center;
