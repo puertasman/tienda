@@ -8,6 +8,11 @@
   <div class="col-md-3">
     <h3>Categorías</h3>
     <ul class="list-group">
+      {% if categories %}
+      <li class="list-group-item {% if not current_category.slug %}active{% endif %}">
+        <a href="/">Categorías</a>
+      </li>
+      {% endif %}
       {% for category in categories %}
       {% if not category.parent %}
       <li class="list-group-item {% if current_category and current_category.slug == category.slug %}active{% endif %}">
