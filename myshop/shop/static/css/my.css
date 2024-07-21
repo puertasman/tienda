@@ -1,0 +1,29 @@
+ul li.list-group-item{
+    display: flex;
+    align-items: center;
+    font-size: 1em;
+    overflow:hidden;
+}
+
+ul li.list-group-item a{
+    display: block;
+    transition: transform .2s linear, font-size .2s linear;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul li.list-group-item a:hover {
+    transform: translateX(8px);
+    font-size: 1.1em;
+}
+
+ul li.list-group-item::after {
+    content: "";
+    flex-grow: 1;
+    /* Asegura que el espacio extra se distribuya a ambos lados del enlace */
+}
+
+ul li.list-group-item.active{
+    background-color: black;
+}

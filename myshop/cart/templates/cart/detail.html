@@ -1,0 +1,56 @@
+{% extends "shop/base.html" %}
+{% load static %}
+{% block title %}
+Tu cesta
+{% endblock %}
+{% block content %}
+<h1>Tu cesta</h1>
+<table class="table table-hover">
+    <thead class="thead-light">
+        <tr>
+            <th scope="col">Imagen</th>
+            <th scope="col">Producto</th>
+            <th scope="col">Cantidad</th>
+            <th scope="col">Eliminar</th>
+            <th scope="col">Precio unitario</th>
+            <th scope="col">Precio</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in cart %}
+        {% with product=item.product %}
+        <tr>
+            <td>
+                <a href="{{ product.get_absolute_url }}">
+                    <img src="{% if product.image %}{{ product.image.url }}
+                {% else %}{% static 'img/no_image.png' %}{% endif %}" class="img-fluid"
+                        style="width: 50px; height: auto;">
+                </a>
+            </td>
+            <td>{{ product.name }}</td>
+            <td>{{ item.quantity }}</td>
+            <td>
+                <form action="{% url 'cart:cart_remove' product.id %}" method="post">
+                    {{ form.quantity.label_tag }}
+                    {{ form.quantity }}
+                    {{ form.override }}
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger btn-sm">Eliminar</button>
+                </form>
+            </td>
+            <td class="text-right">{{ item.price }} €</td>
+            <td class="text-right">{{ item.total_price }} €</td>
+        </tr>
+        {% endwith %}
+        {% endfor %}
+        <tr class="table-primary">
+            <td colspan="5" class="text-right font-weight-bold">Total</td>
+            <td class="text-right font-weight-bold">{{ cart.get_total_price }} €</td>
+        </tr>
+    </tbody>
+</table>
+<p class="text-right">
+    <a href="{% url 'shop:product_list' %}" class="btn btn-primary">Continuar comprando</a>
+    <a href="#" class="btn btn-primary">Checkout</a>
+</p>
+{% endblock %}
