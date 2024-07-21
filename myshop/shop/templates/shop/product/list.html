@@ -9,8 +9,8 @@
     <h3>Categorías</h3>
     <ul class="list-group">
       {% for category in categories %}
-      {% if not category.parent %} <!-- Asegúrate de listar solo categorías sin padre (nivel superior) -->
-      <li class="list-group-item {% if current_category.slug == category.slug %}active{% endif %}">
+      {% if not category.parent %}
+      <li class="list-group-item {% if current_category and current_category.slug == category.slug %}active{% endif %}">
         <a href="{{ category.get_absolute_url }}">{{ category.name }}</a>
       </li>
         {% if category.children.all %}
@@ -26,7 +26,9 @@
     </ul>
   </div>
   <div class="col-md-9">
-    <h1>{% if category %}{{ category.name }}{% else %}Productos{% endif %}</h1>
+    <h1>{% if category.parent %}{{ category.parent }} - {{ category.name }}
+      {% elif category %}{{ category.name }}
+      {% else %}Productos{% endif %}</h1>
     <div class="row">
       {% if products %}
       {% for product in products %}
