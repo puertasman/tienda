@@ -6,11 +6,10 @@
 {% block content %}
 <div class="row">
   <div class="col-md-3">
-    <h3>Categorías</h3>
     <ul class="list-group">
       {% if categories %}
       <li class="list-group-item {% if not curret_category.slug %}active{% endif %}">
-        <a href="/">Categorías</a>
+        <a href="/">Todos</a>
       </li>
       {% endif %}
       {% for category in categories %}
@@ -20,7 +19,7 @@
       </li>
         {% if category.children.all %}
           {% for subcategory in category.children.all %}
-          <li class="list-group-item {% if current_category.slug == subcategory.slug %}active{% endif %}" style='margin-left:10px'>
+          <li class="list-group-item {% if category and category.slug == category_item.slug %}active{% endif %}" style='margin-left:10px'>
             <a href="{{ subcategory.get_absolute_url }}">{{ subcategory.name }}</a>
           </li>
           {% endfor %}
